@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import ItemList from '../../itemList';
-import ItemDetails, {Field} from '../../itemDetails';
-import ErrorMessage from '../../errorMessage';
-import gotService from '../../../services';
-import RowBlock from '../../rowBlock';
+import ItemList from '../itemList';
+import ItemDetails, {Field} from '../itemDetails';
+import ErrorMessage from '../errorMessage';
+import gotService from '../../services';
+import RowBlock from '../rowBlock';
 
 
-export default class BookPage extends Component {
+export default class HousePage extends Component {
     gotService = new gotService();
 
     state = {
@@ -36,22 +36,22 @@ export default class BookPage extends Component {
         const itemList = (
             <ItemList
             onItemSelected={this.onItemSelected}
-            getData={this.gotService.getAllBooks}
-            renderItem={(item) => (<span>{item.name}</span>)}/>
+            getData={this.gotService.getAllHouses}
+            renderItem={(item) => item.name}/>
         )
 
-        const charDetails = (
+        const bookDetails = (
             <ItemDetails 
                 itemId={this.state.selectedItem}
-                getInfo={this.gotService.getBook}
-                noItemSelectedMsg='Please, select some book'>
-                <Field field='publisher' label='Publisher'/>
+                getInfo={this.gotService.getHouse}
+                noItemSelectedMsg='Please, select some House'>
+                <Field field='region' label='Region'/>
                 <Field field='id' label='ID'/>
             </ItemDetails>
         )
 
         return(
-            <RowBlock left={itemList} right={charDetails}/>
+            <RowBlock left={itemList} right={bookDetails}/>
         )
     }
 }
