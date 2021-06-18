@@ -1,23 +1,23 @@
 import React, {Component} from 'react';
-import ItemList from '../itemList';
-import CharDetails, {Field} from '../charDetails';
-import ErrorMessage from '../errorMessage';
-import gotService from '../../services';
-import RowBlock from '../rowBlock';
+import ItemList from '../../itemList';
+import ItemDetails, {Field} from '../../itemDetails';
+import ErrorMessage from '../../errorMessage';
+import gotService from '../../../services';
+import RowBlock from '../../rowBlock';
 
 
 export default class CharacterPage extends Component {
     gotService = new gotService();
 
     state = {
-        selectedChar: 130,
+        selectedItem: null,
         error: false,
     }
 
         
-    onCharSelected = (id) => {
+    onItemSelected = (id) => {
         this.setState({
-            selectedChar: id
+            selectedItem: id
         })
     }
 
@@ -35,17 +35,19 @@ export default class CharacterPage extends Component {
 
         const itemList = (
             <ItemList
-                    onItemSelected={this.onCharSelected}
+                    onItemSelected={this.onItemSelected}
                     getData={this.gotService.getAllCharacters}
                     renderItem={( {name, gender}) => `${name} (${gender})`}/>
         )
 
         const charDetails = (
-            <CharDetails 
-                charId={this.state.selectedChar}>
-                <Field field='gender' label='Gender'/>
-                <Field field='born' label='Born'/>
-            </CharDetails>
+            <ItemDetails 
+                itemId={this.state.selectedItem}
+                getInfo={this.gotService.getCharacter}
+                noItemSelectedMsg='Please, select some character'>
+                <Field field='gender' label='Name'/>
+                <Field field='id' label='ID'/>
+            </ItemDetails>
         )
 
         return(

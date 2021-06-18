@@ -2,19 +2,13 @@ import React, {Component} from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
-import CharacterPage from '../characterPage';
+import CharacterPage from '../pages/characterPage';
+import BookPage from '../pages/bookPage';
+import HousePage from '../pages/housePage';
 import ErrorMessage from '../errorMessage';
-import CharDetails from '../charDetails';
-import ItemList from '../itemList';
 import gotService from '../../services';
-import './app.css';
 import styled from 'styled-components';
 
-
-const Button = styled.button`
-    padding: 25px 25px 15px 25px;
-    margin-bottom: 40px;
-`
 
 export default class App extends Component {
     gotService = new gotService();
@@ -64,28 +58,10 @@ export default class App extends Component {
                         <CharacterPage/>
                     </Row>
                     <Row>
-                        <Col md='6'>
-                            <ItemList
-                            onItemSelected={this.onItemSelected}
-                            getData={this.gotService.getAllBooks}
-                            renderItem={(item) => (<><span>{item.name}</span><button>Click me!</button></>)}/>
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails 
-                            charId={this.state.selectedChar}/>
-                        </Col>
+                        <BookPage/>
                     </Row>
                     <Row>
-                        <Col md='6'>
-                            <ItemList
-                                onItemSelected={this.onItemSelected}
-                                getData={this.gotService.getAllHouses}
-                                renderItem={(item) => item.name}/>
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails 
-                                charId={this.state.selectedChar}/>
-                        </Col>
+                        <HousePage/>
                     </Row>
                 </Container>
             </>
@@ -93,3 +69,8 @@ export default class App extends Component {
     }
 
 }
+
+const Button = styled.button`
+    padding: 25px 25px 15px 25px;
+    margin-bottom: 40px;
+`

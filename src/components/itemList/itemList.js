@@ -4,19 +4,7 @@ import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 
 
-const ListItems = styled.ul`
-    background-color: #fff;
-    list-group-item {
-    cursor: pointer;
-    }
-    li {
-        cursor: pointer
-    }
-`
-
 export default class ItemList extends Component {
-
-
     state = {
         itemList: null,
         error: false
@@ -82,3 +70,14 @@ export default class ItemList extends Component {
         );
     }
 }
+
+
+const ListItems = styled.ul`
+    background-color: #fff;
+    list-group-item {
+    cursor: pointer;
+    }
+    li {
+        cursor: pointer
+    }
+`

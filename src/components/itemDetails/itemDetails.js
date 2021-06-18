@@ -1,20 +1,101 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
-import gotService from '../../services';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 
-const Field = ({char, field, label}) => {
+const Field = ({item, field, label}) => {
     return (
         <li className="list-group-item d-flex justify-content-between">
             <span className="term">{label}</span>
-            <span>{char[field]}</span>
+            <span>{item[field]}</span>
         </li>
     )
 }
 
 export {
     Field
+}
+
+export default class ItemDetails extends Component {
+
+
+    state = {
+        item: null,
+        loading: true,
+        error: false
+    }
+
+    componentDidMount() {
+        this.updateItem();
+        
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.itemId !== prevProps.itemId) {
+            this.updateItem();
+        }
+    }
+
+    onItemDetailsLoaded = (item) => {
+        this.setState({
+            item,
+            loading: false
+        })
+    }
+
+    updateItem() {
+        const {itemId} = this.props;
+        if (!itemId) {
+            return;
+        }
+
+        this.setState({
+            loading: true
+        })
+
+        this.props.getInfo(itemId)
+            .then( this.onItemDetailsLoaded )
+            .catch( () => this.onError())
+    }
+
+    onError(){
+        this.setState({
+            item: null,
+            error: true
+        })
+    }
+
+    render() {
+
+        if (!this.state.item && this.state.error) {
+            return <ErrorMessage/>
+        } else if (!this.state.item) {
+            return <SelectError>{this.props.noItemSelectedMsg}</SelectError>
+        }
+        const {item} = this.state
+        const {name} = item;
+
+        if (this.state.loading) {
+            return (
+                <CharDetailsDiv className="char-details rounded">
+                    <Spinner/>
+                </CharDetailsDiv>
+            )
+        }
+
+        return (
+            <CharDetailsDiv className="rounded">
+                <h4>{name}</h4>
+                <ul className="list-group list-group-flush">
+                    {   
+                        React.Children.map(this.props.children, (child) => {
+                            return React.cloneElement(child, {item})
+                        })
+                    }
+                </ul>
+            </CharDetailsDiv>
+        );
+    }
 }
 
 const CharDetailsDiv = styled.div`
@@ -35,86 +116,3 @@ const SelectError = styled.span`
     text-align: center;
     font-size: 26px;
 `;
-
-export default class CharDetails extends Component {
-
-    gotService = new gotService();
-
-    state = {
-        char: null,
-        loading: true,
-        error: false
-    }
-
-    componentDidMount() {
-        this.updateChar();
-        
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar();
-        }
-    }
-
-    onCharDetailsLoaded = (char) => {
-        this.setState({
-            char,
-            loading: false
-        })
-    }
-
-    updateChar() {
-        const {charId} = this.props;
-        if (!charId) {
-            return;
-        }
-
-        this.setState({
-            loading: true
-        })
-
-        this.gotService.getCharacter(charId)
-            .then( this.onCharDetailsLoaded )
-            .catch( () => this.onError())
-    }
-
-    onError(){
-        this.setState({
-            char: null,
-            error: true
-        })
-    }
-
-    render() {
-
-        if (!this.state.char && this.state.error) {
-            return <ErrorMessage/>
-        } else if (!this.state.char) {
-            return <SelectError>Please select a character</SelectError>
-        }
-        const {char} = this.state
-        const {name} = char;
-
-        if (this.state.loading) {
-            return (
-                <CharDetailsDiv className="char-details rounded">
-                    <Spinner/>
-                </CharDetailsDiv>
-            )
-        }
-
-        return (
-            <CharDetailsDiv className="rounded">
-                <h4>{name}</h4>
-                <ul className="list-group list-group-flush">
-                    {   
-                        React.Children.map(this.props.children, (child) => {
-                            return React.cloneElement(child, {char})
-                        })
-                    }
-                </ul>
-            </CharDetailsDiv>
-        );
-    }
-}
