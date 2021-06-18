@@ -64,7 +64,7 @@ export default class ItemList extends Component {
         const items = itemList ? this.renderItems(itemList) : <Spinner/>;
 
         return (
-            <ListItems>
+            <ListItems className='rounded list-group-item'>
                 {items}
             </ListItems>
         );
