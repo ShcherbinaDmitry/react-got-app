@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import styled from 'styled-components';
+import './noPageFound.css';
+import {Link} from 'react-router-dom';
 
 export default class NoPageFound extends Component {
     render() {
         return (
-            <NoPage>Unfortunately, we couldn't find this page</NoPage>
+            <>
+            <h1>Unfortunately, we couldn't find this page</h1>
+            <Link to='/' style={{ color: '#FFF' }} className='toggle-btn'>Go Home</Link>
+            </>
         )
     }
 }
 
-const NoPage = styled.h1`
-    color: #fff;
-`

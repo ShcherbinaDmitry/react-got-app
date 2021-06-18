@@ -5,7 +5,7 @@ import RandomChar from '../randomChar';
 import {HousePage, BookPage, CharacterPage, BookItem, NoPageFound} from '../pages';
 import ErrorMessage from '../errorMessage';
 import gotService from '../../services';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import './app.css';
 
@@ -57,17 +57,19 @@ export default class App extends Component {
                                 </button>
                             </Col>
                         </Row>
-                        
-                        <Route path='/' exact component={() => <h1>Welcome to GoT database</h1>}/>
-                        <Route path='*' component={NoPageFound}/>
-                        <Route path='/characters' component={CharacterPage}/>
-                        <Route path='/houses' component={HousePage}/>
-                        <Route path='/books' exact component={BookPage}/>
-                        <Route path='/books/:id' render={
-                            ({match}) => {
-                                const {id} = match.params;
-                                return <BookItem bookId={id}/>}
-                            }/>
+                        <Switch>
+                            <Route path='/' exact component={() => <h1>Welcome to GoT database</h1>}/>
+                            <Route path='/characters' component={CharacterPage}/>
+                            <Route path='/houses' component={HousePage}/>
+                            <Route path='/books' exact component={BookPage}/>
+                            <Route path='/books/:id' render={
+                                ({match}) => {
+                                    const {id} = match.params;
+                                    return <BookItem bookId={id}/>}
+                                }/>
+                            <Route path='*' component={NoPageFound}/>
+                        </Switch>
+
                         
                     </Container>
                 </div>
