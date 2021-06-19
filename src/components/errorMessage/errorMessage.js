@@ -2,14 +2,6 @@ import React from 'react';
 import img from './error.jpg';
 import styled from 'styled-components';
 
-const ErrorImg = styled.img `
-    max-width: 100%;
-`
-
-const ErrorMsg = styled.span`
-    margin: 0 auto;
-    text-align: center;
-`
 
 const ErrorMessage = () => {
     return (
@@ -21,3 +13,14 @@ const ErrorMessage = () => {
 }
 
 export default ErrorMessage;
+
+
+const ErrorImg = styled.img `
+    max-width: 100%;
+`
+
+const ErrorMsg = styled.span`
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+`

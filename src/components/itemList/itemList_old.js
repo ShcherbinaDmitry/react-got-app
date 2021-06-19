@@ -7,28 +7,30 @@ import ErrorMessage from '../errorMessage';
 function ItemList({getData, onItemSelected, renderItem}) {
 
     const [itemList, updateList] = useState([]);
-    const [error, hasError] = useState(false);
 
     useEffect(() => {
         getData()
-            .then( (data) => {
+            .then((data) => {
                 updateList(data)
-                hasError(false)
-            })
-            .catch((status) => {
-                console.log(`Error: ${status}`)
-                hasError(true)
             })
     }, [])
 
-    // componentDidCatch(){
+
+    // componentDidCatch() {
     //     console.log('Component did catch an error')
     //     this.setState({
     //         itemList: null,
     //         error: true
     //     })
-    // } - no Hook equivalent as of now
- 
+    // }
+
+    // onError(status) {
+    //     console.log('Error ' + status)
+    //     this.setState({
+    //         itemList: null,
+    //         error: true
+    //     })
+    // }
 
     function renderItems(arr) {
         return arr.map((item) => {
@@ -45,9 +47,9 @@ function ItemList({getData, onItemSelected, renderItem}) {
         })
     }
 
-    if(error) {
-        return <ErrorMessage/>
-    }
+    // if(error) {
+    //     return <ErrorMessage/>
+    // }
 
     const items = itemList ? renderItems(itemList) : <Spinner/>;
 
@@ -56,7 +58,11 @@ function ItemList({getData, onItemSelected, renderItem}) {
             {items}
         </ListItems>
     );
+    
 }
+
+export default ItemList;
+
 
 const ListItems = styled.ul`
     background-color: #fff;
@@ -67,5 +73,3 @@ const ListItems = styled.ul`
         cursor: pointer
     }
 `
-
-export default ItemList;
