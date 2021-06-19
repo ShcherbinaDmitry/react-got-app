@@ -8,16 +8,19 @@ function ItemList({getData, onItemSelected, renderItem}) {
 
     const [itemList, updateList] = useState([]);
     const [error, hasError] = useState(false);
+    const [loading, isLoading] = useState(true);
 
     useEffect(() => {
         getData()
             .then( (data) => {
-                updateList(data)
-                hasError(false)
+                updateList(data);
+                hasError(false);
+                isLoading(false);
             })
             .catch((status) => {
                 console.log(`Error: ${status}`)
-                hasError(true)
+                hasError(true);
+                isLoading(false);
             })
     }, [])
 
@@ -49,7 +52,11 @@ function ItemList({getData, onItemSelected, renderItem}) {
         return <ErrorMessage/>
     }
 
-    const items = itemList ? renderItems(itemList) : <Spinner/>;
+    if(loading) {
+        return <Spinner/>
+    }
+
+    const items = renderItems(itemList);
 
     return (
         <ListItems className='rounded list-group-item'>

@@ -44,7 +44,8 @@ export default class CharacterPage extends Component {
             <ItemDetails 
                 itemId={this.state.selectedItem}
                 getInfo={this.gotService.getCharacter}
-                noItemSelectedMsg='Please, select some character'>
+                noItemSelectedMsg='Please, select some character'
+                children={this.children}>
                 <Field field='gender' label='Name'/>
                 <Field field='id' label='ID'/>
             </ItemDetails>

@@ -44,7 +44,8 @@ export default class HousePage extends Component {
             <ItemDetails 
                 itemId={this.state.selectedItem}
                 getInfo={this.gotService.getHouse}
-                noItemSelectedMsg='Please, select some House'>
+                noItemSelectedMsg='Please, select some House'
+                children={this.children}>
                 <Field field='region' label='Region'/>
                 <Field field='id' label='ID'/>
             </ItemDetails>

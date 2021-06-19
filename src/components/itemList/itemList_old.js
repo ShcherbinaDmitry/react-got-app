@@ -1,67 +1,75 @@
-import React, {useState, useEffect} from 'react';
+import React, {Component} from 'react';
 import styled from 'styled-components';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 
 
-function ItemList({getData, onItemSelected, renderItem}) {
+export default class ItemList extends Component {
+    state = {
+        itemList: null,
+        error: false
+    }
+    
+    componentDidMount() {
+        const {getData} = this.props;
 
-    const [itemList, updateList] = useState([]);
-
-    useEffect(() => {
         getData()
-            .then((data) => {
-                updateList(data)
+            .then((itemList) => {
+                this.setState({
+                    itemList,
+                    error: false
+                });
             })
-    }, [])
+            .catch(() => {this.onError()});
+    }
 
+    componentDidCatch(){
+        console.log('Component did catch an error')
+        this.setState({
+            itemList: null,
+            error: true
+        })
+    }
+    onError(status){
+        console.log('Error ' + status)
+        this.setState({
+            itemList: null,
+            error: true
+        })
+    }
 
-    // componentDidCatch() {
-    //     console.log('Component did catch an error')
-    //     this.setState({
-    //         itemList: null,
-    //         error: true
-    //     })
-    // }
-
-    // onError(status) {
-    //     console.log('Error ' + status)
-    //     this.setState({
-    //         itemList: null,
-    //         error: true
-    //     })
-    // }
-
-    function renderItems(arr) {
+    renderItems(arr) {
         return arr.map((item) => {
             const {id} = item;
-            const label = renderItem(item);
+            const label = this.props.renderItem(item);
             return (
                 <li
                     key={id}
                     className="list-group-item"
-                    onClick={() => onItemSelected(id)}>
+                    onClick={() => this.props.onItemSelected(id)}>
                     {label}
                 </li>
             )
         })
     }
 
-    // if(error) {
-    //     return <ErrorMessage/>
-    // }
 
-    const items = itemList ? renderItems(itemList) : <Spinner/>;
+    render() {
+        const {itemList, error} = this.state;
 
-    return (
-        <ListItems className='rounded list-group-item'>
-            {items}
-        </ListItems>
-    );
-    
+        if(error) {
+            return <ErrorMessage/>
+        }
+
+        const items = itemList ? this.renderItems(itemList) : <Spinner/>;
+
+        return (
+            <ListItems className='rounded list-group-item'>
+                {items}
+            </ListItems>
+        );
+    }
 }
-
-export default ItemList;
 
 
 const ListItems = styled.ul`
@@ -73,3 +81,4 @@ const ListItems = styled.ul`
         cursor: pointer
     }
 `
+

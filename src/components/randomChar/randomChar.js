@@ -1,91 +1,64 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import gotService from '../../services';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 // import { ninvoke } from 'q';
 
-const RandomBlock = styled.div`
-    background-color: #fff;
-    padding: 25px 25px 15px 25px;
-    margin-bottom: 40px;
-    h4 {
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    .loadingio-spinner-spin-iisr1mbgvzo {
-        margin: 0 auto; 
-    }
-`
-const Term = styled.span`
-    font-weight: bold;
-    margin-right: 10px;
-`
 
-export default class RandomChar extends Component {
+ function RandomChar() {
+    
+    const [item, updateItem] = useState({});
+    const [loading, isLoading] = useState(true);
+    const [error, hasError] = useState(false);
+
+    const got = new gotService();
 
 
-    gotService = new gotService();
+    useEffect(() => {
+        updateChar();
+        let timerId = setInterval(updateChar, 1500)
+        return () => {
+            clearInterval(timerId);
+        }
+    }, [])
 
-    componentDidMount() {
-        this.updateChar();
-        this.timerId = setInterval(this.updateChar, 15000);
+
+    function onCharLoaded (item) {
+        updateItem(item);
+        isLoading(false);
+        hasError(false);
     }
 
-    componentWillUnmount() {
-        clearInterval(this.timerId);
-    }
-  
 
-    state = {
-        char: {},
-        loading: true,
-        error: false
-    }
-
-    onCharLoaded = (char) => {
-        this.setState({
-            char,
-            loading: false,
-        })
-    }
-
-    onError = (err) => {
-        this.setState({
-            error: true,
-            loading: false,
-        })
-    }
-
-    updateChar =() => {
+    function updateChar() {
         const id = Math.floor(Math.random()*140 + 11);
-        this.gotService.getCharacter(id)
-            .then(this.onCharLoaded)
-            .catch(this.onError);
+        got.getCharacter(id)
+            .then(onCharLoaded)
+            .catch((status) => {
+                console.log(`Error: ${status}`);
+                hasError(true);
+            })
     }
 
+    
 
+    const errorMessage = error ? <ErrorMessage/> : null
+    const spinner = loading ? <Spinner/> : null
+    const content = !(loading || error) ? <View char={item}/> : null;
 
+    return (
+        <RandomBlock className="rounded">
+            {errorMessage}
+            {spinner}
+            {content}
+        </RandomBlock>
+    );
 
-    render() {
-        const {char, loading, error} = this.state;
-
-        const errorMessage = error ? <ErrorMessage/> : null
-        const spinner = loading ? <Spinner/> : null
-        const content = !(loading || error) ? <View char={char}/> : null;
-
-        return (
-            <RandomBlock className="rounded">
-                {errorMessage}
-                {spinner}
-                {content}
-            </RandomBlock>
-        );
-    }
 }
 
-const View = ({char}) => {
-    const {name, gender, born, died, culture, titles, aliases, id} = char;
+const View = (item) => {
+    const {name, gender, born, died, culture, titles, aliases, id} = item.char;
     return (
         <>
             <h4>Random Character: {name}</h4>
@@ -122,3 +95,21 @@ const View = ({char}) => {
         </>
     )
 }
+
+const RandomBlock = styled.div`
+    background-color: #fff;
+    padding: 25px 25px 15px 25px;
+    margin-bottom: 40px;
+    h4 {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .loadingio-spinner-spin-iisr1mbgvzo {
+        margin: 0 auto; 
+    }
+`
+const Term = styled.span`
+    font-weight: bold;
+    margin-right: 10px;
+`
+export default RandomChar;

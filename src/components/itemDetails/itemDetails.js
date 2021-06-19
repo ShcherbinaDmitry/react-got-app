@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
@@ -16,86 +16,65 @@ export {
     Field
 }
 
-export default class ItemDetails extends Component {
+function ItemDetails({itemId, getInfo, noItemSelectedMsg, children}) {
 
+    const [item, updateData] = useState([]);
+    const [loading, isLoading] = useState(true);
+    const [error, hasError] = useState(false);
 
-    state = {
-        item: null,
-        loading: true,
-        error: false
+    useEffect(() => {
+        updateItem();
+    }, [itemId])
+
+    function onItemDetailsLoaded(data) {
+        isLoading(false);
+        updateData(data);
     }
 
-    componentDidMount() {
-        this.updateItem();
-        
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.itemId !== prevProps.itemId) {
-            this.updateItem();
-        }
-    }
-
-    onItemDetailsLoaded = (item) => {
-        this.setState({
-            item,
-            loading: false
-        })
-    }
-
-    updateItem() {
-        const {itemId} = this.props;
+    function updateItem() {
         if (!itemId) {
             return;
         }
 
-        this.setState({
-            loading: true
-        })
+        isLoading(true)
 
-        this.props.getInfo(itemId)
-            .then( this.onItemDetailsLoaded )
-            .catch( () => this.onError())
+        getInfo(itemId)
+            .then(onItemDetailsLoaded)
+            .catch((status) => {
+                console.log(`Error: ${status}`);
+                hasError(true);
+            })
     }
 
-    onError(){
-        this.setState({
-            item: null,
-            error: true
-        })
+
+    if (!item && error) {
+        return <ErrorMessage/>
+    } else if (item.length === 0) {
+        return <SelectError>{noItemSelectedMsg}</SelectError>
     }
 
-    render() {
 
-        if (!this.state.item && this.state.error) {
-            return <ErrorMessage/>
-        } else if (!this.state.item) {
-            return <SelectError>{this.props.noItemSelectedMsg}</SelectError>
-        }
-        const {item} = this.state
-        const {name} = item;
-
-        if (this.state.loading) {
-            return (
-                <CharDetailsDiv className="char-details rounded">
-                    <Spinner/>
-                </CharDetailsDiv>
-            )
-        }
-
+    if (loading) {
         return (
-            <CharDetailsDiv className="rounded">
-                <h4>{name}</h4>
-                <ul className="list-group list-group-flush">
-                    {   
-                        React.Children.map(this.props.children, (child) => {
-                            return React.cloneElement(child, {item})
-                        })
-                    }
-                </ul>
+            <CharDetailsDiv className="char-details rounded">
+                <Spinner/>
             </CharDetailsDiv>
-        );
+        )
     }
+
+    return (
+        <CharDetailsDiv className="rounded">
+            <h4>{item.name}</h4>
+            <ul className="list-group list-group-flush">
+                {   
+                    React.Children.map(children, (child) => {
+                        return React.cloneElement(child, {item})
+                    })
+                }
+            </ul>
+        </CharDetailsDiv>
+    );
+
 }
 
 const CharDetailsDiv = styled.div`
@@ -116,3 +95,5 @@ const SelectError = styled.span`
     text-align: center;
     font-size: 26px;
 `;
+
+export default ItemDetails;

@@ -5,17 +5,18 @@ import gotService from '../../services';
 import {withRouter} from 'react-router-dom';
 
 
-
 class BookPage extends Component {
     gotService = new gotService();
 
     state = {
         error: false,
+        loading: true
     }
 
     componentDidCatch() {
         this.setState({
-            error: true
+            error: true,
+            loading: false
         })
     }
 
