@@ -1,84 +1,58 @@
 import React, {Component} from 'react';
-import styled from 'styled-components';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 
+import './itemList.css';
 
 export default class ItemList extends Component {
+
     state = {
-        itemList: null,
-        error: false
+        itemList: null
     }
-    
+
     componentDidMount() {
         const {getData} = this.props;
 
         getData()
-            .then((itemList) => {
+            .then( (itemList) => {
                 this.setState({
-                    itemList,
-                    error: false
-                });
+                    itemList
+                })
             })
-            .catch(() => {this.onError()});
-    }
-
-    componentDidCatch(){
-        console.log('Component did catch an error')
-        this.setState({
-            itemList: null,
-            error: true
-        })
-    }
-    onError(status){
-        console.log('Error ' + status)
-        this.setState({
-            itemList: null,
-            error: true
-        })
     }
 
     renderItems(arr) {
         return arr.map((item) => {
             const {id} = item;
+
             const label = this.props.renderItem(item);
+
             return (
-                <li
+                <li 
                     key={id}
                     className="list-group-item"
-                    onClick={() => this.props.onItemSelected(id)}>
+                    onClick={ () => this.props.onItemSelected(id)}>
                     {label}
                 </li>
             )
         })
     }
 
-
     render() {
-        const {itemList, error} = this.state;
+        const {itemList} = this.state;
 
-        if(error) {
-            return <ErrorMessage/>
+        if (!itemList) {
+            return <Spinner/>
         }
 
-        const items = itemList ? this.renderItems(itemList) : <Spinner/>;
+        const items = this.renderItems(itemList);
+
 
         return (
-            <ListItems className='rounded list-group-item'>
+            <ul className="item-list list-group">
                 {items}
-            </ListItems>
+            </ul>
         );
     }
 }
-
-
-const ListItems = styled.ul`
-    background-color: #fff;
-    list-group-item {
-    cursor: pointer;
-    }
-    li {
-        cursor: pointer
-    }
-`
 

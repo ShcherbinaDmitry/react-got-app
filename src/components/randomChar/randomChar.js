@@ -97,10 +97,10 @@ const View = (item) => {
 }
 
 const RandomBlock = styled.div`
-    background-color: #fff;
     padding: 25px 25px 15px 25px;
     margin-bottom: 40px;
     h4 {
+        color: #fff,
         margin-bottom: 20px;
         text-align: center;
     }
@@ -111,5 +111,6 @@ const RandomBlock = styled.div`
 const Term = styled.span`
     font-weight: bold;
     margin-right: 10px;
+    color: #fff,
 `
 export default RandomChar;

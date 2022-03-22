@@ -66,13 +66,17 @@ function ItemList({getData, onItemSelected, renderItem}) {
 }
 
 const ListItems = styled.ul`
-    background-color: #fff;
+    background-color: transparent;
     list-group-item {
     cursor: pointer;
+    background-color: transparent;
     }
     li {
-        cursor: pointer
+        cursor: pointer,
+        background-color: transparent,
     }
 `
+
+ 
 
 export default ItemList;
